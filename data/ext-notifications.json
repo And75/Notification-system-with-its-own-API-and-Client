@@ -1,0 +1,17 @@
+    [
+        {
+            "process": "Ext-09878783636",
+            "message": "External Api Error on proces. This process are blocked!",
+            "type": "error"
+        },
+        {
+            "process": "Ext-09099009900",
+            "message": "External Api Warning on process....",
+            "type": "warning"
+        },
+        {
+            "process": "Ext-09900459009",
+            "message": "External Api Information for thit proces : the process runnig on time",
+            "type": "info"
+        }
+]

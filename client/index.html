@@ -1,0 +1,32 @@
+<html>
+
+<head>
+  <title>This is a page test for Beam tecnical test!</title>
+  <script src="./dist/main-client.js" defer></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding:30px;
+    }
+
+    h1 {
+      text-transform: uppercase;
+      font-size: 1.5rem;
+      color: #333;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <h1>Beam technical test</h1>
+  </div>
+  <div>
+    <button class="info" onclick="App.createNotification('info', 'process')">Generate info notification</button>
+    <button class="warning" onclick="App.createNotification('warning', 'process')">Generate warning
+      notification</button>
+    <button class="error" onclick="App.testError()">Generate error notification</button>
+  </div>
+</body>
+
+</html>
