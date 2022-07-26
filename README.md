@@ -1,6 +1,7 @@
-# Notification-system-with-its-own-API-and-Client
+# Notification system with its own API and Client
 
 Type script project for notification system with its own API and a sample client
+This project are developped on pure Vanilla Js and Node/Express with very minimal use of external libraries.
 
 ## Structure of the project
 
@@ -52,7 +53,7 @@ Libraries are present only on Api section of project and is very minimal
 ## How the project works
 
 ### The API implement
-1. WebSoket to handler ans send messages to client on port 8080
+1. WebSoket to handler and send messages to client on port 8080
 2. External APi simulation to port 3000
 
 Api works only on Node server
