@@ -25,7 +25,7 @@ const app = (0, express_1.default)();
 app.use(express_1.default.json());
 //SET Url for get the complete alert JSON
 app.get("/get-notifications", function (req, res) {
-    (0, fs_1.readFile)("./../../data/ext-notifications.json", (err, data) => {
+    (0, fs_1.readFile)("./../../../data/ext-notifications.json", (err, data) => {
         if (err)
             throw err;
         let messages = JSON.parse(data.toString());

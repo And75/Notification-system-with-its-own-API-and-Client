@@ -9,17 +9,17 @@ interface wsMessage {
     status: boolean;
     payload: BeamNotification[];
 }
-interface BeamClient {
+interface BsysClient {
     identifier: string,
     logToken: string
 }
-interface BeamTClOptions {
-    client: BeamClient
+interface BsysTClOptions {
+    client: BsysClient
 }
 interface BeamTCLconf {
     wsUrl: string,
     appName: string,
-    options: BeamTClOptions
+    options: BsysTClOptions
 }
 
 
@@ -39,10 +39,10 @@ class BeamTestClient {
     default = {
         //Web Soket parmeters
         wsUrl: 'ws://localhost:8080',
-        appName: 'beam-notification-client',
+        appName: 'bsys-notification-client',
         options: {
             client: {
-                identifier: "beam-client-test",
+                identifier: "bsys-client-test",
                 logToken: 'KjTgUhtl3dlqq#ssds_'
             }
         }
@@ -50,15 +50,13 @@ class BeamTestClient {
 
     //authToken: string = '';
 
-    constructor(opt: BeamTClOptions) {
+    constructor(opt: BsysTClOptions) {
 
         //Clean Unread
         this.store = [];
 
         //Merge the default options whit incoming opt
         this.conf = Object.assign(this.default, opt)
-
-        console.log(this.conf);
 
         //Reder de element
         this.render().then((res) => {
@@ -97,7 +95,7 @@ class BeamTestClient {
                 // Create header
                 this.cHeader = document.createElement('div');
                 this.cHeader.setAttribute('class', 'header');
-                this.cHeader.innerHTML = "Beam notifications <small>Click on item to mark as read<small>";
+                this.cHeader.innerHTML = "Notifications <small>Click on item to mark as read<small>";
 
                 // Create body
                 this.cBody = document.createElement('div');
@@ -113,7 +111,7 @@ class BeamTestClient {
                         right: 0;
                         padding: 0;
                         margin: 15px;
-                        width: 300px;
+                        width: 400px;
                         z-index: 500;
                         border-radius: 5px;
                         font-family: sans-serif;
@@ -121,18 +119,37 @@ class BeamTestClient {
                         color: #666464;
                     }
                     .wrapper .header{
-                        margin: 10px 0;
-                        height: 20px;
+                        margin: 10px 15px;
+                        height: 39px;
+                        border-bottom: 2px solid;
+                        border-bottom-color: #929292;
+                        padding: 8px 10px 3px;
                     }
                     .wrapper .header small{
                         font-size: 0.7rem;
                         display: block;
                     }
                     .wrapper .body{
-                        padding: 0;
-                        margin: 15px 0;
+                        padding: 0 20px;
                         list-style: none;
+                        max-height: 80vh;
+                        overflow-x: hidden;
+                        overflow-y: auto;
                     }
+
+                    .wrapper .body::-webkit-scrollbar {
+                        width: 2px;
+                    }
+                    .wrapper .body::-webkit-scrollbar-track {
+                        background: transparent;
+                    }
+                    .wrapper .body::-webkit-scrollbar-thumb {
+                        background: #888;
+                    }
+                    .wrapper .body::-webkit-scrollbar-thumb:hover {
+                        background: #555;
+                    }
+
                     .wrapper .item{
                         width: auto;
                         margin: 19px 0;
@@ -237,6 +254,7 @@ class BeamTestClient {
         });
     }
 
+
     /**
      * @name retrieveNotification
      * @description this method manage the output of notification
@@ -253,8 +271,16 @@ class BeamTestClient {
      * @return lenght of store
      */
     storeNotification(data: any) {
-        let length = this.store.push(data);
-        return length
+        console.log('data.process', data.process, this.store)
+        const exist = this.store.find(({ process }) => process===data.process);
+        console.log('exist', exist);
+        if(exist==undefined){
+            console.log('exist', exist);
+            let length = this.store.push(data);
+            return length
+        }
+        return  this.store.length;
+
     }
 
     /**
@@ -386,7 +412,7 @@ class BeamTestClient {
 
 const options = {
     client: {
-        identifier: "beam-client-test",
+        identifier: "bsys-client-test",
         logToken: 'KjTgUhtl3dlqq#ssds_'
     }
 }

@@ -1,4 +1,4 @@
-export interface BeamNotification {
+export interface BsysNotification {
     process: string;
     message: string;
     type: string;

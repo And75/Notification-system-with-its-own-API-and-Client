@@ -8,10 +8,10 @@ const http_1 = __importDefault(require("http"));
 const rxjs_1 = require("rxjs");
 const node_json_db_1 = require("node-json-db");
 const JsonDBConfig_1 = require("node-json-db/dist/lib/JsonDBConfig");
-class BeamMessServices {
+class BsysMessServices {
     constructor(ws, req) {
         this.externalApi = "http://localhost:3000/get-notifications";
-        this.application = 'beam-notification';
+        this.application = 'bsys-notification';
         //authToken: string = "APP-4590GTjkRTz";
         //logToken: string = "KjTgUhtl3dlqq#ssds_";
         this.db = null;
@@ -19,7 +19,7 @@ class BeamMessServices {
         this.ws = ws;
         this.req = req;
         //this.externalApi = this.externalApi;
-        this.db = new node_json_db_1.JsonDB(new JsonDBConfig_1.Config("./../../data/notification", true, false, '/'));
+        this.db = new node_json_db_1.JsonDB(new JsonDBConfig_1.Config("./../../../data/notification", true, false, '/'));
         this.db.reload();
         //Start send stored notification
         this.sendStoredNotification();
@@ -63,11 +63,19 @@ class BeamMessServices {
     /**
      * @name writeUnReadNotification
      * @description Thi method write the received unread notification from client
-     * @param data BeamNotification[]
+     * @param data BsysNotification[]
      * @returns
      */
     storeNotification(data) {
-        this.db.push('/' + data[0].process, data[0]);
+        try {
+            const exist = this.db.getData('/' + data[0].process);
+            console.log('Not stored : ', data[0].process, exist);
+        }
+        catch (error) {
+            console.log('Stored: ', data[0].process);
+            this.db.push('/' + data[0].process, data[0]);
+        }
+        ;
     }
     removeNotification(data) {
         this.db.delete('/' + data[0].process);
@@ -115,12 +123,12 @@ class BeamMessServices {
      * @description This method formatting de WsMessage for comunication with the clients
      * @param service string
      * @param status boolean
-     * @param data BeamNotification | LoginDetail
+     * @param data BsysNotification | LoginDetail
      * @returns
      */
     wsFormatMessage(service, status, data) {
         const mess = {
-            application: "beam-notification-api",
+            application: "bsys-notification-api",
             service: service,
             status: status,
             payload: data,
@@ -130,7 +138,7 @@ class BeamMessServices {
     /**
      * @name wsStreamNotification
      * @description : this function send the message to clients
-     * @param data BeamNotification[]
+     * @param data BsysNotification[]
      * @returns void
      */
     wsStreamNotification(data, store = true) {
@@ -165,7 +173,7 @@ class BeamMessServices {
  * @route GET /api
  */
 const BeamMessApiController = (ws, req) => {
-    new BeamMessServices(ws, req);
+    new BsysMessServices(ws, req);
 };
 exports.BeamMessApiController = BeamMessApiController;
 //# sourceMappingURL=api.js.map

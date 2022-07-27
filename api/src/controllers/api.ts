@@ -4,21 +4,21 @@ import http from "http";
 import { Request } from "express";
 import { WebSocket } from "ws";
 import { from, interval, zip, filter } from 'rxjs';
-import { BeamNotification } from "./../types/api-types";
+import { BsysNotification } from "./../types/api-types";
 import { WsMessage } from "./../types/api-types";
 import { JsonDB } from 'node-json-db';
 import { Config } from 'node-json-db/dist/lib/JsonDBConfig'
 
-class BeamMessServices {
+class BsysMessServices {
 
     ws: WebSocket;
     req: Request;
     externalApi :string = "http://localhost:3000/get-notifications"
-    application: string = 'beam-notification';
+    application: string = 'bsys-notification';
     //authToken: string = "APP-4590GTjkRTz";
     //logToken: string = "KjTgUhtl3dlqq#ssds_";
     db:JsonDB = null;
-    store: BeamNotification[] = [];
+    store: BsysNotification[] = [];
 
     constructor(ws: WebSocket, req: Request) {
 
@@ -26,7 +26,7 @@ class BeamMessServices {
         this.req = req;
         //this.externalApi = this.externalApi;
 
-        this.db = new JsonDB(new Config("./../../data/notification", true, false, '/'));
+        this.db = new JsonDB(new Config("./../../../data/notification", true, false, '/'));
         this.db.reload();
        
         //Start send stored notification
@@ -80,14 +80,20 @@ class BeamMessServices {
     /**
      * @name writeUnReadNotification
      * @description Thi method write the received unread notification from client
-     * @param data BeamNotification[]
+     * @param data BsysNotification[]
      * @returns 
      */
-    storeNotification(data: BeamNotification[]) {
-        this.db.push('/'+data[0].process, data[0]);
+    storeNotification(data: BsysNotification[]) {        
+        try {
+            const exist = this.db.getData('/'+data[0].process);
+            console.log('Not stored : ', data[0].process, exist)
+        } catch(error) {
+            console.log('Stored: ', data[0].process);
+            this.db.push('/'+data[0].process, data[0]);
+        };
     }
 
-    removeNotification(data:BeamNotification[]){
+    removeNotification(data:BsysNotification[]){
         this.db.delete('/'+data[0].process);
     }
 
@@ -136,12 +142,12 @@ class BeamMessServices {
      * @description This method formatting de WsMessage for comunication with the clients
      * @param service string 
      * @param status boolean
-     * @param data BeamNotification | LoginDetail
+     * @param data BsysNotification | LoginDetail
      * @returns 
      */
     wsFormatMessage(service: string, status: boolean, data:any): string {
         const mess = {
-            application: "beam-notification-api",
+            application: "bsys-notification-api",
             service: service,
             status: status,
             payload: data,
@@ -152,10 +158,10 @@ class BeamMessServices {
     /**
      * @name wsStreamNotification
      * @description : this function send the message to clients 
-     * @param data BeamNotification[]
+     * @param data BsysNotification[]
      * @returns void
      */
-    wsStreamNotification(data: BeamNotification[], store:boolean=true): void {
+    wsStreamNotification(data: BsysNotification[], store:boolean=true): void {
         if(store) {this.storeNotification(data);}
         const stream = this.wsFormatMessage('send-notification', true, data)
         this.ws.send(JSON.stringify(stream))
@@ -187,7 +193,7 @@ class BeamMessServices {
  * @route GET /api
  */
 export const BeamMessApiController = (ws: WebSocket, req: Request) => {
-    new BeamMessServices(ws, req);
+    new BsysMessServices(ws, req);
 };
 
 
